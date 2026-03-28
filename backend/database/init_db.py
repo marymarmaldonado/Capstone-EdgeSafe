@@ -22,7 +22,7 @@ def init_db():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE,
         password_hash TEXT,
-        created_at TEXT,
+        created_at TEXT
     )
     """)
 
