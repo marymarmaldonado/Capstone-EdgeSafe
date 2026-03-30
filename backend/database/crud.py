@@ -23,3 +23,15 @@ def get_all_events():
     conn.close()
 
     return rows
+
+
+def get_event_by_id(event_id):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM detection_events WHERE id = ?", (event_id,))
+    row = cursor.fetchone()
+
+    conn.close()
+
+    return row
