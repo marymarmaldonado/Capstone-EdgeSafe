@@ -1,6 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 
-from database.crud import get_all_events, get_event_by_id
+from database.crud import get_all_events, get_event_by_id, get_filtered_events
 
 app = FastAPI()
 
@@ -13,8 +13,13 @@ def root():
 
 
 @app.get("/events")
-def read_events():
-    events = get_all_events()
+def read_events(detected: bool = Query(default = None), source: str = Query(default = None), limit: int = Query(default = None)
+):
+    if detected is None and source is None and limit is None:
+        events = get_all_events()
+    else:
+        events = get_filtered_events(detected, source, limit)
+    
     return [dict(e) for e in events]
 
 
