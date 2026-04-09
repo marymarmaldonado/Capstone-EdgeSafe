@@ -3,16 +3,16 @@ mode: train
 model: yolo11n.pt
 data: c:\Users\jandu\Documents\Capstone\Capstone-EdgeSafe\ml\kaggle\Gun with webcam
   views.v1i.yolov8\data.yaml
-epochs: 50
+epochs: 100
 time: null
-patience: 15
+patience: 20
 batch: 16
 imgsz: 640
 save: true
 save_period: -1
 cache: false
-device: null
-workers: 8
+device: '0'
+workers: 4
 project: null
 name: yolo11n_firearm_v1
 exist_ok: false
