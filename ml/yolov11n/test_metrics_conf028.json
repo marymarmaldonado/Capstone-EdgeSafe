@@ -1,0 +1,14 @@
+{
+    "model_path": "/content/drive/MyDrive/My_models/Capstone/yolo11n_100ep_768/best.pt",
+    "dataset": "/root/.cache/kagglehub/datasets/abuzarkhaaan/helmetandguntesting/versions/1/Gun with webcam views.v1i.yolov8",
+    "test_images_path": "/root/.cache/kagglehub/datasets/abuzarkhaaan/helmetandguntesting/versions/1/Gun with webcam views.v1i.yolov8/test/images",
+    "test_labels_path": "/root/.cache/kagglehub/datasets/abuzarkhaaan/helmetandguntesting/versions/1/Gun with webcam views.v1i.yolov8/test/labels",
+    "confidence_threshold": 0.28,
+    "num_test_images": 240,
+    "accuracy": 0.8583333333333333,
+    "precision": 1.0,
+    "recall": 0.7258064516129032,
+    "f1_score": 0.8411214953271028,
+    "avg_latency_ms": 14.620982512481836,
+    "std_latency_ms": 3.5627210624382326
+}

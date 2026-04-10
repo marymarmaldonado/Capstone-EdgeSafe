@@ -1,0 +1,8 @@
+Métricas de validación - yolo11n_100ep_768
+Timestamp: 2026-03-17T23:46:51.245628
+
+Precision media (mp): 0.9592
+Recall media (mr): 0.6277
+F1 Score: 0.7589
+mAP@0.5: 0.7151
+mAP@0.5:0.95: 0.4151
