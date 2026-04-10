@@ -35,3 +35,30 @@ def get_event_by_id(event_id):
     conn.close()
 
     return row
+
+def get_filtered_events(detected = None, source = None, limit = None):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    query = "SELECT * FROM detection_events WHERE 1=1"
+    params = []
+
+    if detected is not None:
+        query += " AND detected = ?"
+        params.append(int(detected))
+    
+    if source is not None:
+        query += " AND source = ?"
+        params.append(source)
+
+    query += " ORDER BY id DESC"
+
+    if limit is not None:
+        query += " LIMIT ?"
+        params.append(limit)
+
+    cursor.execute(query, params)
+    rows = cursor.fetchall()
+
+    conn.close()
+    return rows
