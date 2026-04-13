@@ -1,19 +1,4 @@
-// import Navbar from "../components/Navbar";
-
-// function ResultsPage() {
-//   return (
-//     <div>
-//       <Navbar />
-//       <main style={{ padding: "2rem" }}>
-//         <h1>Results</h1>
-//         <p>This page will contain results, charts, and performance metrics.</p>
-//       </main>
-//     </div>
-//   );
-// }
-
-// export default ResultsPage;
-
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import "../styles/dashboard.css";
 
@@ -28,71 +13,62 @@ type DetectionEvent = {
   image_path: string;
 };
 
-// mock data for recent detection events - in a real app this would come from an API call to the backend
-const recentEvents: DetectionEvent[] = [
-  {
-    id: 12,
-    model_name: "YOLOv8",
-    inference_ms: 214,
-    timestamp: "2026-04-13T10:24:18",
-    confidence: 0.97,
-    detected: true,
-    source: "CAM 1",
-    image_path: "images/test12.jpg",
-  },
-  {
-    id: 11,
-    model_name: "YOLOv8",
-    inference_ms: 231,
-    timestamp: "2026-04-13T10:12:43",
-    confidence: 0.91,
-    detected: true,
-    source: "CAM 2",
-    image_path: "images/test11.jpg",
-  },
-  {
-    id: 10,
-    model_name: "YOLOv8",
-    inference_ms: 198,
-    timestamp: "2026-04-13T09:58:07",
-    confidence: 0.38,
-    detected: false,
-    source: "CAM 3",
-    image_path: "images/test10.jpg",
-  },
-  {
-    id: 9,
-    model_name: "YOLOv8",
-    inference_ms: 220,
-    timestamp: "2026-04-13T09:44:56",
-    confidence: 0.88,
-    detected: true,
-    source: "CAM 1",
-    image_path: "images/test9.jpg",
-  },
-  {
-    id: 8,
-    model_name: "YOLOv8",
-    inference_ms: 205,
-    timestamp: "2026-04-13T09:31:14",
-    confidence: 0.29,
-    detected: false,
-    source: "CAM 4",
-    image_path: "images/test8.jpg",
-  },
-];
-
 function ResultsPage() {
-  const totalRecentEvents = recentEvents.length;
+  const [events, setEvents] = useState<DetectionEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data: DetectionEvent[] = await response.json();
+        setEvents(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  const totalRecentEvents = events.length;
   const avgInferenceMs =
     totalRecentEvents > 0
       ? Math.round(
-          recentEvents.reduce((sum, event) => sum + event.inference_ms, 0) /
+          events.reduce((sum, event) => sum + event.inference_ms, 0) /
             totalRecentEvents
         )
       : 0;
 
-  const latestDetectedEvent = recentEvents.find((event) => event.detected);
+  const latestDetectedEvent = events.find((event) => event.detected);
+
+  if (loading) {
+    return (
+      <div>
+        <Navbar />
+        <main style={{ padding: "2rem" }}>
+          <p>Loading detection results...</p>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div>
+        <Navbar />
+        <main style={{ padding: "2rem" }}>
+          <p>Error loading data: {error}</p>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -161,7 +137,7 @@ function ResultsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentEvents.map((event) => (
+                  {events.map((event) => (
                     <tr key={event.id}>
                       <td>#{event.id}</td>
                       <td>{formatTimestamp(event.timestamp)}</td>
