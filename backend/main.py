@@ -1,8 +1,18 @@
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 
 from database.crud import get_all_events, get_event_by_id, get_filtered_events
 
 app = FastAPI()
+
+# Adding CORS middleware so frontend can work/connect with backend (https://fastapi.tiangolo.com/tutorial/cors/)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Vite dev server
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # Root route (test if API works)
