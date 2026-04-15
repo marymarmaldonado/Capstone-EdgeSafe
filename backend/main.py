@@ -2,6 +2,7 @@ from database.init_db import init_db
 from services.logger import test_logger
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 
 from database.crud import get_all_events, get_event_by_id, get_filtered_events
 
@@ -10,6 +11,15 @@ init_db()
 
 # Fill table with fake logs for testing
 test_logger()
+
+# Adding CORS middleware so frontend can work/connect with backend (https://fastapi.tiangolo.com/tutorial/cors/)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Vite dev server
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 app = FastAPI()
