@@ -1,9 +1,18 @@
+from database.init_db import init_db
+from services.logger import test_logger
+
 from fastapi import FastAPI, HTTPException, Query
 
 from database.crud import get_all_events, get_event_by_id, get_filtered_events
 
-app = FastAPI()
+# Create database if not created yet
+init_db()
 
+# Fill table with fake logs for testing
+test_logger()
+
+
+app = FastAPI()
 
 # Root route (test if API works)
 # To test, run "uvicorn main:app --reload" in the backend folder
@@ -13,13 +22,14 @@ def root():
 
 
 @app.get("/events")
-def read_events(detected: bool = Query(default = None), source: str = Query(default = None), limit: int = Query(default = None)
-):
+def read_events(detected: bool = Query(default=None), source: str = Query(default=None),
+                limit: int = Query(default=None)
+                ):
     if detected is None and source is None and limit is None:
         events = get_all_events()
     else:
         events = get_filtered_events(detected, source, limit)
-    
+
     return [dict(e) for e in events]
 
 

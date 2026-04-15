@@ -1,0 +1,1 @@
+{"id":1,"model_name":"YOLO","inference_ms":10,"timestamp":"2026-04-14T17:19:24.941434","confidence":0.91,"detected":1,"source":"CAM 1","image_path":"images/test1.jpg"}
