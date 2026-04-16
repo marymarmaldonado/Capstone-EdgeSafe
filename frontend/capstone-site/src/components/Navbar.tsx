@@ -5,7 +5,7 @@ function Navbar() {
     <nav style={styles.nav}>
       <h2 style={styles.title}>EdgeSafe</h2>
       <div style={styles.links}>
-        <Link to="/" style={styles.link}>Home</Link>
+        <Link to="/home" style={styles.link}>Home</Link>
         <Link to="/results" style={styles.link}>Results</Link>
         <Link to="/logs" style={styles.link}>Logs</Link>
       </div>
