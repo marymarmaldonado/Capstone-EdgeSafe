@@ -16,7 +16,6 @@ type DetectionEvent = {
 function ResultsPage() {
   const [events, setEvents] = useState<DetectionEvent[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -28,13 +27,16 @@ function ResultsPage() {
         const data: DetectionEvent[] = await response.json();
         setEvents(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        console.error('Failed to fetch events:', err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchEvents();
+
+    const timeout = setTimeout(() => setLoading(false), 5000);
+    return () => clearTimeout(timeout);
   }, []);
 
   const totalRecentEvents = events.length;
@@ -59,17 +61,6 @@ function ResultsPage() {
     );
   }
 
-  if (error) {
-    return (
-      <div>
-        <Navbar />
-        <main style={{ padding: "2rem" }}>
-          <p>Error loading data: {error}</p>
-        </main>
-      </div>
-    );
-  }
-
   return (
     <div>
       <Navbar />
@@ -87,13 +78,13 @@ function ResultsPage() {
         <section className="stats-grid">
           <article className="dashboard-card stat-card">
             <p className="stat-label">Recent Events</p>
-            <h2 className="stat-value">{totalRecentEvents}</h2>
+            <h2 className="stat-value">{totalRecentEvents || "No data"}</h2>
             <p className="stat-helper">Latest processed records</p>
           </article>
 
           <article className="dashboard-card stat-card">
             <p className="stat-label">Average Inference</p>
-            <h2 className="stat-value">{avgInferenceMs} ms</h2>
+            <h2 className="stat-value">{avgInferenceMs ? `${avgInferenceMs} ms` : "No data"}</h2>
             <p className="stat-helper">Recent processing latency</p>
           </article>
 
@@ -137,28 +128,36 @@ function ResultsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {events.map((event) => (
-                    <tr key={event.id}>
-                      <td>#{event.id}</td>
-                      <td>{formatTimestamp(event.timestamp)}</td>
-                      <td>{event.source}</td>
-                      <td>{event.model_name}</td>
-                      <td>{event.inference_ms} ms</td>
-                      <td>{Math.round(event.confidence * 100)}%</td>
-                      <td>
-                        <span
-                          className={`status-badge ${
-                            event.detected
-                              ? "status-detected"
-                              : "status-not-detected"
-                          }`}
-                        >
-                          {event.detected ? "Detected" : "Not Detected"}
-                        </span>
+                  {events.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} style={{ textAlign: 'center', padding: '2rem' }}>
+                        No detection events found
                       </td>
-                      <td>{event.image_path}</td>
                     </tr>
-                  ))}
+                  ) : (
+                    events.map((event) => (
+                      <tr key={event.id}>
+                        <td>#{event.id}</td>
+                        <td>{formatTimestamp(event.timestamp)}</td>
+                        <td>{event.source}</td>
+                        <td>{event.model_name}</td>
+                        <td>{event.inference_ms} ms</td>
+                        <td>{Math.round(event.confidence * 100)}%</td>
+                        <td>
+                          <span
+                            className={`status-badge ${
+                              event.detected
+                                ? "status-detected"
+                                : "status-not-detected"
+                            }`}
+                          >
+                            {event.detected ? "Detected" : "Not Detected"}
+                          </span>
+                        </td>
+                        <td>{event.image_path}</td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
