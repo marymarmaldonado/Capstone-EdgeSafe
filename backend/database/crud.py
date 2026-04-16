@@ -1,4 +1,5 @@
 from database.db import get_db
+from datetime import datetime
 
 def insert_detection_event(model_name, inference_ms, timestamp, confidence, detected, source, image_path):
     conn = get_db()
@@ -62,3 +63,26 @@ def get_filtered_events(detected = None, source = None, limit = None):
 
     conn.close()
     return rows
+
+# User functions
+def get_user_by_username(username):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+    user = cursor.fetchone()
+
+    conn.close()
+    return user
+
+def create_user(username, password_hash):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO users (username, password_hash, created_at)
+        VALUES (?, ?, ?)
+    """, (username, password_hash, datetime.now().isoformat()))
+
+    conn.commit()
+    conn.close()
