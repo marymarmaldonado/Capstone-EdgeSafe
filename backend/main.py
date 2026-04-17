@@ -12,6 +12,8 @@ init_db()
 # Fill table with fake logs for testing
 test_logger()
 
+app = FastAPI()
+
 # Adding CORS middleware so frontend can work/connect with backend (https://fastapi.tiangolo.com/tutorial/cors/)
 app.add_middleware(
     CORSMiddleware,
@@ -20,9 +22,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-app = FastAPI()
 
 # Root route (test if API works)
 # To test, run "uvicorn main:app --reload" in the backend folder
