@@ -1,5 +1,8 @@
 import Navbar from "../components/Navbar";
-import image from "../../public/image.png";
+import jessy_profile_photo from "../../public/jessy_profile_photo.jpg";
+import andrea_profile_photo from "../../public/andrea_profile_photo.jpg";
+import jorge_profile_photo from "../../public/jorge_profile_photo.jpg";
+import marymar_profile_photo from "../../public/marymar_profile_photo.jpg";
 import "../styles/home-page.css";
 
 type TeamMember = {
@@ -8,6 +11,7 @@ type TeamMember = {
   role: string;
   description: string;
   image: string;
+  link: string;
 };
 
 const teamMembers: TeamMember[] = [
@@ -17,7 +21,8 @@ const teamMembers: TeamMember[] = [
     role: "Machine Learning & Edge Deployment",
     description:
       "Responsible for dataset preparation, YOLO model training, and deployment on the Jetson edge device.",
-    image: image,
+    image: andrea_profile_photo,
+    link: "https://www.linkedin.com/in/andrea-seda/",
   },
   {
     id: 2,
@@ -25,7 +30,8 @@ const teamMembers: TeamMember[] = [
     role: "Machine Learning & Edge Deployment",
     description:
       "Focused on model optimization, performance evaluation, and support for the live camera inference pipeline.",
-    image: image,
+    image: jessy_profile_photo,
+    link: "https://www.linkedin.com/in/jessy-and%C3%BAjar-cruz-a85039243/",
   },
   {
     id: 3,
@@ -33,7 +39,8 @@ const teamMembers: TeamMember[] = [
     role: "Backend & Database",
     description:
       "Developed the backend API and local database for secure event logging, metadata storage, and retrieval.",
-    image: image,
+    image: jorge_profile_photo,
+    link: "https://www.linkedin.com/in/jorge-mar%C3%ADn-matos/",
   },
   {
     id: 4,
@@ -41,7 +48,8 @@ const teamMembers: TeamMember[] = [
     role: "Frontend & Security",
     description:
       "Designed and implemented the dashboard UI, authentication flow, and secure access to project resources.",
-    image: image,
+    image: marymar_profile_photo,
+    link: "https://www.linkedin.com/in/marymar-maldonado-roche",
   },
 ];
 
@@ -76,12 +84,12 @@ function HomePage() {
           <h2 className="team-heading">Meet the Team</h2>
           <div className="team-grid">
             {teamMembers.map((member) => (
-              <article key={member.id} className="team-card">
-                <img src={member.image} alt={member.name} className="team-image" />
+              <a key={member.id} className="team-card" href={member.link} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+                <img src={member.image} alt={member.name} className="team-image" style={{ borderColor: "#000" }} />
                 <h3 className="team-name">{member.name}</h3>
                 <p className="team-role">{member.role}</p>
                 <p className="team-description">{member.description}</p>
-              </article>
+              </a>
             ))}
           </div>
         </section>
@@ -89,11 +97,11 @@ function HomePage() {
         <section style={styles.section}>
           <h2 className="deliverables-heading">Project Deliverables</h2>
 
-          <div className="deliverables-embed-grid">
+          {/* <div className="deliverables-embed-grid">
             <div className="deliverable-panel">
               <h3 className="deliverable-title">Elevator Pitch Video</h3>
               <div className="video-wrapper">
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/4C4HjbBjsyE?si=Ldzhk-10m0U0f5Y9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/4C4HjbBjsyE?si=Ldzhk-10m0U0f5Y9" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
               </div>
             </div>
 
@@ -106,7 +114,7 @@ function HomePage() {
                 ></iframe>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="deliverables-links-grid">
             <div className="deliverable-panel">
