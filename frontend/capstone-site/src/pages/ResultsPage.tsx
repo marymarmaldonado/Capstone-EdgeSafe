@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
+import { apiFetch } from "../api";
 import "../styles/dashboard.css";
 
 type DetectionEvent = {
@@ -20,14 +21,14 @@ function ResultsPage() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/events`);
+        const response = await apiFetch("/events");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data: DetectionEvent[] = await response.json();
         setEvents(data);
       } catch (err) {
-        console.error('Failed to fetch events:', err);
+        setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setLoading(false);
       }
