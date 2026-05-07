@@ -1,23 +1,53 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../styles/login.css";
+
+type LocationState = { from?: { pathname?: string } } | null;
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const state = location.state as LocationState;
+  const from = state?.from?.pathname || "/home";
 
-  function handleLogin(e: any) {
+  async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    // temporary mock user auth (will be replaced)
-    if (username === "admin" && password === "admin") {
-      localStorage.setItem("isAuthenticated", "true");
-      navigate("/home");
-    } else {
-      setError("Invalid credentials");
+    try {
+      const response = await fetch(`${BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.status === 401) {
+        setError("Invalid credentials");
+        return;
+      }
+
+      if (!response.ok) {
+        setError("Login failed. Please try again.");
+        return;
+      }
+
+      const data: { access_token: string; token_type: string } =
+        await response.json();
+      localStorage.setItem("token", data.access_token);
+      navigate(from, { replace: true });
+    } catch (err) {
+      console.error("Login request failed:", err);
+      setError("Could not reach the server. Please try again.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -36,6 +66,7 @@ function LoginPage() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
+            disabled={loading}
           />
 
           <input
@@ -44,11 +75,14 @@ function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            disabled={loading}
           />
 
           {error && <p className="login-error">{error}</p>}
 
-          <button type="submit">Sign In</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Signing in..." : "Sign In"}
+          </button>
         </form>
       </div>
     </div>
