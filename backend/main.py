@@ -7,6 +7,12 @@ from auth.auth_crud import get_user_by_username
 from auth.security import verify_password, create_access_token
 from auth.dependencies import get_current_user
 
+# Create database if not created yet
+init_db()
+
+# Fill table with fake logs for testing
+test_logger()
+
 app = FastAPI()
 
 # Adding CORS middleware so frontend can work/connect with backend (https://fastapi.tiangolo.com/tutorial/cors/)
@@ -19,7 +25,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 # Root route (test if API works)
 # To test, run "uvicorn main:app --reload" in the backend folder
@@ -50,7 +55,7 @@ def read_events(detected: bool = Query(default = None), source: str = Query(defa
         events = get_all_events()
     else:
         events = get_filtered_events(detected, source, limit)
-    
+
     return [dict(e) for e in events]
 
 

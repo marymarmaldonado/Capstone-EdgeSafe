@@ -23,3 +23,6 @@ Team Members:
 - Jessy Andujar
 - Jorge Marin
 - Marymar Maldonado
+
+## Trello Task Management Board
+https://trello.com/invite/b/69829d5c029bd70ab344febf/ATTIc0b7f434bbf738a1aa4de78c33260d3481E3D8E1/capstone-project

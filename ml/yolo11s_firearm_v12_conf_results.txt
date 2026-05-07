@@ -1,0 +1,17 @@
+Best Confidence Threshold Selection
+-------------------------------------
+Timestamp: 2026-04-15 21:37:33.029272
+
+Constraint:
+  Minimum Precision: 0.9
+
+Selected Threshold:
+  Confidence: 0.0300
+
+Metrics:
+  Accuracy:   0.8833
+  Precision:  0.9068
+  Recall:     0.8629
+  F1 Score:   0.8843
+  Avg Latency (ms): 122.67
+  Std Latency (ms): 26.71
