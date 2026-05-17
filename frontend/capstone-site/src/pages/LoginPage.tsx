@@ -4,7 +4,7 @@ import "../styles/login.css";
 
 type LocationState = { from?: { pathname?: string } } | null;
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const BASE_URL = "http://localhost:8000";
 
 function LoginPage() {
   const [username, setUsername] = useState("");
