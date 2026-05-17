@@ -1,1 +1,35 @@
-ml/kaggle/
+# Entornos virtuales (NUNCA subir)
+edgesafe-env/
+venv/
+env/
+*.venv
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyc
+*.so
+
+# Modelos pesados (mejor compartir por Drive, no por Git)
+*.pt
+*.onnx
+*.engine
+
+# Datasets
+datasets/
+*.zip
+
+# Resultados de entrenamiento de YOLO (pesados)
+runs/
+
+# Sistema
+.DS_Store
+*.swp
+.ipynb_checkpoints/
+
+# Credenciales (NUNCA subir)
+.git-credentials
+*.token
+.env
+
+mly/kaggle/
