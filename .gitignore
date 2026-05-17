@@ -32,4 +32,4 @@ runs/
 *.token
 .env
 
-mly/kaggle/
+ml/kaggle/
