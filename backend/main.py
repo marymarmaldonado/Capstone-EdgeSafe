@@ -10,8 +10,10 @@ from backend.auth.auth_crud import get_user_by_username
 from backend.auth.security import verify_password, create_access_token
 from backend.auth.dependencies import get_current_user
 
+from tempfile import NamedTemporaryFile
+import os
+
 import shutil
-from pathlib import Path
 from inference.inference_service import run_detection
 
 # Create database if not created yet
@@ -21,9 +23,6 @@ init_db()
 # test_logger()
 
 app = FastAPI()
-
-UPLOAD_DIR = Path("data/uploads")
-UPLOAD_DIR.mkdir(exist_ok=True)
 
 
 # Adding CORS middleware so frontend can work/connect with backend (https://fastapi.tiangolo.com/tutorial/cors/)
@@ -86,26 +85,28 @@ async def detect_image(
     file: UploadFile = File(...),
     _current_user: str = Depends(get_current_user),
 ):
-    image_path = UPLOAD_DIR / file.filename
+    suffix = Path(file.filename).suffix
 
-    with image_path.open("wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    result = run_detection(str(image_path))
-
-    if result["detected"]:
-        insert_detection_event(
-            model_name=result["model_name"],
-            inference_ms=result["inference_ms"],
-            timestamp=result["timestamp"],
-            confidence=result["confidence"],
-            detected=int(result["detected"]),
-            source="uploaded_image",
-            image_path=result["image_path"]
-        )
-
-    return {
-        "message": "Detection completed",
-        "event_logged": result["detected"],
-        **result
-    }
+    with NamedTemporaryFile(delete=False, suffix=suffix) as temp_file:
+        shutil.copyfileobj(file.file, temp_file)
+        temp_path = temp_file.name
+    try:
+        result = run_detection(temp_path)
+        if result["detected"]:
+            insert_detection_event(
+                model_name=result["model_name"],
+                inference_ms=result["inference_ms"],
+                timestamp=result["timestamp"],
+                confidence=result["confidence"],
+                detected=int(result["detected"]),
+                source="uploaded_image",
+                image_path=result["image_path"]  # annotated image
+            )
+        return {
+            "message": "Detection completed",
+            "event_logged": result["detected"],
+            **result
+        }
+    finally:
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
