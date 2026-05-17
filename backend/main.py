@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Query, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import Optional
 from pathlib import Path
 
 from backend.database.crud import insert_detection_event, get_all_events, get_event_by_id, get_filtered_events
@@ -15,6 +16,21 @@ import os
 
 import shutil
 from inference.inference_service import run_detection
+
+class DetectionResult(BaseModel):
+    """
+    Resultado de inferencia que el pipeline del edge envia ya
+    procesado. Campos en el formato EXACTO del schema
+    detection_events (ver API_Documentation.md).
+    """
+    model_name: str            # ej "YOLOv11n"
+    inference_ms: int          # latencia medida en el edge
+    timestamp: str             # ISO format, generado en el edge
+    confidence: float          # 0.0 - 1.0
+    detected: bool             # True si hay arma
+    source: str                # ej "CAM 1"
+    image_path: str            # ruta a la imagen anotada (guardada por el pipeline)
+    label: Optional[str] = None  # ej "Guns" (opcional, por si lo usan luego)
 
 # Create database if not created yet
 init_db()
@@ -81,32 +97,36 @@ def read_event(
     raise HTTPException(status_code=404, detail="Event not found")
 
 @app.post("/detect")
-async def detect_image(
-    file: UploadFile = File(...),
+def detect_event(
+    result: DetectionResult,
     _current_user: str = Depends(get_current_user),
 ):
-    suffix = Path(file.filename).suffix
-
-    with NamedTemporaryFile(delete=False, suffix=suffix) as temp_file:
-        shutil.copyfileobj(file.file, temp_file)
-        temp_path = temp_file.name
-    try:
-        result = run_detection(temp_path)
-        if result["detected"]:
-            insert_detection_event(
-                model_name=result["model_name"],
-                inference_ms=result["inference_ms"],
-                timestamp=result["timestamp"],
-                confidence=result["confidence"],
-                detected=int(result["detected"]),
-                source="uploaded_image",
-                image_path=result["image_path"]  # annotated image
-            )
+    """
+    Recibe un resultado de deteccion YA PROCESADO por el pipeline
+    del edge device. El backend NO corre inferencia: solo persiste
+    el evento si hubo deteccion de arma.
+ 
+    Separacion de responsabilidades:
+      - ML pipeline (edge): captura + inferencia + guarda imagen
+      - Backend (este): validar + guardar evento + servir API
+    """
+    if result.detected:
+        insert_detection_event(
+            model_name=result.model_name,
+            inference_ms=result.inference_ms,
+            timestamp=result.timestamp,
+            confidence=result.confidence,
+            detected=int(result.detected),
+            source=result.source,
+            image_path=result.image_path,
+        )
         return {
-            "message": "Detection completed",
-            "event_logged": result["detected"],
-            **result
+            "message": "Event logged",
+            "event_logged": True,
         }
-    finally:
-        if os.path.exists(temp_path):
-            os.remove(temp_path)
+ 
+    # Si no hubo deteccion, no se guarda nada (igual que Figura 1 del reporte)
+    return {
+        "message": "No detection, event not logged",
+        "event_logged": False,
+    }
