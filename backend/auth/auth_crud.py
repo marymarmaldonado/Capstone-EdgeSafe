@@ -1,5 +1,5 @@
 from datetime import datetime
-from database.db import get_db
+from backend.database.db import get_db
 
 
 def get_user_by_username(username: str):

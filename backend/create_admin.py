@@ -10,8 +10,8 @@ creation. Passwords are bcrypt-hashed before being stored.
 import getpass
 import sys
 
-from auth.auth_crud import create_user, get_user_by_username
-from auth.security import hash_password
+from backend.auth.auth_crud import create_user, get_user_by_username
+from backend.auth.security import hash_password
 
 MIN_PASSWORD_LENGTH = 8
 

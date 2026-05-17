@@ -1,21 +1,30 @@
-from fastapi import FastAPI, HTTPException, Query, Depends
+from fastapi import FastAPI, HTTPException, Query, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from pathlib import Path
 
-from database.crud import get_all_events, get_event_by_id, get_filtered_events
-from database.init_db import init_db
-from services.logger import test_logger
-from auth.auth_crud import get_user_by_username
-from auth.security import verify_password, create_access_token
-from auth.dependencies import get_current_user
+from backend.database.crud import insert_detection_event, get_all_events, get_event_by_id, get_filtered_events
+from backend.database.init_db import init_db
+from backend.services.logger import test_logger
+from backend.auth.auth_crud import get_user_by_username
+from backend.auth.security import verify_password, create_access_token
+from backend.auth.dependencies import get_current_user
+
+import shutil
+from pathlib import Path
+from inference.inference_service import run_detection
 
 # Create database if not created yet
 init_db()
 
 # Fill table with fake logs for testing
-test_logger()
+# test_logger()
 
 app = FastAPI()
+
+UPLOAD_DIR = Path("data/uploads")
+UPLOAD_DIR.mkdir(exist_ok=True)
+
 
 # Adding CORS middleware so frontend can work/connect with backend (https://fastapi.tiangolo.com/tutorial/cors/)
 # Vite may shift ports (5173, 5174) if one is taken, so we accept any
@@ -71,3 +80,32 @@ def read_event(
         return dict(event)
 
     raise HTTPException(status_code=404, detail="Event not found")
+
+@app.post("/detect")
+async def detect_image(
+    file: UploadFile = File(...),
+    _current_user: str = Depends(get_current_user),
+):
+    image_path = UPLOAD_DIR / file.filename
+
+    with image_path.open("wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    result = run_detection(str(image_path))
+
+    if result["detected"]:
+        insert_detection_event(
+            model_name=result["model_name"],
+            inference_ms=result["inference_ms"],
+            timestamp=result["timestamp"],
+            confidence=result["confidence"],
+            detected=int(result["detected"]),
+            source="uploaded_image",
+            image_path=result["image_path"]
+        )
+
+    return {
+        "message": "Detection completed",
+        "event_logged": result["detected"],
+        **result
+    }
