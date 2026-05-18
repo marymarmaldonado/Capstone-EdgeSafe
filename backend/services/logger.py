@@ -1,4 +1,4 @@
-from database.crud import insert_detection_event
+from backend.database.crud import insert_detection_event
 from datetime import datetime
 import random
 

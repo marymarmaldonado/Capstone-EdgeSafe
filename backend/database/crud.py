@@ -1,4 +1,4 @@
-from database.db import get_db
+from backend.database.db import get_db
 from datetime import datetime
 
 def insert_detection_event(model_name, inference_ms, timestamp, confidence, detected, source, image_path):
