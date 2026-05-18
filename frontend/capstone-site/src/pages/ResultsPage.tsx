@@ -28,7 +28,7 @@ function ResultsPage() {
         const data: DetectionEvent[] = await response.json();
         setEvents(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
+        console.error("Failed to fetch detection events:", err);
       } finally {
         setLoading(false);
       }
@@ -69,7 +69,9 @@ function ResultsPage() {
       <main className="dashboard-page">
         <section className="dashboard-header">
           <div>
-            <h1 className="dashboard-title">Detection Results</h1>
+            <h1 className="dashboard-title">
+              <span className="accent-red">Detection</span> Results
+            </h1>
             <p className="dashboard-subtitle">
               Review recent firearm detection activity, detection metadata, and performance metrics.
             </p>

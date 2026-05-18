@@ -16,7 +16,6 @@ function Navbar() {
       <div style={styles.links}>
         <Link to="/home" style={styles.link}>Home</Link>
         <Link to="/results" style={styles.link}>Results</Link>
-        <Link to="/logs" style={styles.link}>Logs</Link>
         {loggedIn && (
           <button onClick={handleLogout} style={styles.logoutBtn}>
             Logout

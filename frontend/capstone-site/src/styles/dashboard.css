@@ -42,6 +42,11 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  border-top: 3px solid #b91c1c;
+}
+
+.accent-red {
+  color: #b91c1c;
 }
 
 .stat-label {
@@ -100,8 +105,8 @@
 }
 
 .status-detected {
-  background: rgba(220, 38, 38, 0.12);
-  color: #b91c1c;
+  background: #b91c1c;
+  color: #ffffff;
 }
 
 .status-not-detected {

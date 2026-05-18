@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ResultsPage from "./pages/ResultsPage";
-import LogsPage from "./pages/LogsPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -17,14 +16,6 @@ function App() {
         element={
           <ProtectedRoute>
             <ResultsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/logs"
-        element={
-          <ProtectedRoute>
-            <LogsPage />
           </ProtectedRoute>
         }
       />
