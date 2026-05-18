@@ -1,0 +1,46 @@
+============================================================
+EdgeSafe - Edge Platform Benchmark Results
+============================================================
+Timestamp:     2026-05-16 22:50:24.065792
+Platform:      Linux-5.15.148-tegra-aarch64-with-glibc2.35
+Python:        3.10.12
+PyTorch:       2.8.0
+CUDA enabled:  True
+GPU:           Orin
+Test image:    debug_detection.jpg
+Runs/model:    50 (warmup 5)
+
+[YOLOv11n]
+  Model:           ../runs/detect/yolo11n_firearm_v1/weights/best.pt
+  Classes (1): {0: 'Guns'}
+  Conf threshold:  0.04
+  Detections:      50/50
+  Avg latency:     39.01 ms
+  Min / Max:       38.55 / 39.80 ms
+  Std deviation:   0.22 ms
+  Last detection:  Guns:78.4%
+  SMART Obj #1 (<=1000ms): PASS
+
+[YOLOv11s]
+  Model:           ../runs/detect/yolo11s_firearm_v12/weights/best.pt
+  Classes (1): {0: 'Guns'}
+  Conf threshold:  0.03
+  Detections:      50/50
+  Avg latency:     44.20 ms
+  Min / Max:       43.66 / 49.40 ms
+  Std deviation:   1.21 ms
+  Last detection:  Guns:82.9%
+  SMART Obj #1 (<=1000ms): PASS
+
+------------------------------------------------------------
+COMPARISON SUMMARY
+------------------------------------------------------------
+  Faster model:    YOLOv11n (39.01 ms)
+  Latency diff:    5.19 ms
+  More stable:     YOLOv11n (std 0.22 ms)
+
+  Note: Final model selection should weigh latency,
+  stability, model size and memory footprint on the
+  resource-constrained Jetson Orin Nano (7.4 GB RAM).
+
+============================================================
