@@ -97,11 +97,11 @@ function HomePage() {
         <section style={styles.section}>
           <h2 className="deliverables-heading">Project Deliverables</h2>
 
-          {/* <div className="deliverables-embed-grid">
+          <div className="deliverables-embed-grid">
             <div className="deliverable-panel">
               <h3 className="deliverable-title">Elevator Pitch Video</h3>
               <div className="video-wrapper">
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/4C4HjbBjsyE?si=Ldzhk-10m0U0f5Y9" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/EsUt_hsmjdU?si=fR37jH5EcpUwFSev" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"></iframe>
               </div>
             </div>
 
@@ -109,12 +109,68 @@ function HomePage() {
               <h3 className="deliverable-title">Final Presentation</h3>
               <div className="pdf-wrapper">
                 <iframe
-                  src="../public/capstone-proposal.pdf"
-                  title="EdgeSafe Final Presentation"
+                  src="https://docs.google.com/presentation/d/e/2PACX-1vQTbUtC9NgTaIAxzThJX2Lj_rWjMSpo1nmcapreQhjUr-dG4I5yWGIoB20j2vdjVWt-j-gD0YCLUlzH/pubembed?start=false&loop=false&delayms=3000"
+                  title="Capstone Presentation"
+                  width="960"
+                  height="569"
+                  allowFullScreen
                 ></iframe>
               </div>
+              <div style={{
+                display: "flex",
+                gap: "12px",
+                marginTop: "16px",
+                justifyContent: "center",
+                flexWrap: "wrap",
+                fontSize: "0.875rem",
+              }}>
+                <a
+                  href={`${import.meta.env.BASE_URL}capstone-edgesafe.pdf`}
+                  download
+                  style={{
+                    display: "inline-block",
+                    padding: "10px 20px",
+                    backgroundColor: "#007BFF",
+                    color: "white",
+                    textDecoration: "none",
+                    borderRadius: "6px",
+                    fontWeight: 500,
+                    transition: "background-color 0.2s ease",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#34495e")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#2c3e50")
+                  }
+                >
+                  Download PDF
+                </a>
+                <a
+                  href={`${import.meta.env.BASE_URL}capstone-edgesafe.pptx`}
+                  download
+                  style={{
+                    display: "inline-block",
+                    padding: "10px 20px",
+                    backgroundColor: "#007BFF",
+                    color: "white",
+                    textDecoration: "none",
+                    borderRadius: "6px",
+                    fontWeight: 500,
+                    transition: "background-color 0.2s ease",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#34495e")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#2c3e50")
+                  }
+                >
+                  Download PowerPoint
+                </a>
+              </div>
             </div>
-          </div> */}
+          </div>
 
           <div className="deliverables-links-grid">
             <div className="deliverable-panel">
